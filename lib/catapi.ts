@@ -17,6 +17,9 @@ export async function fetchCats(
   const url = new URL(`${API_BASE}/images/search`);
   url.searchParams.set("limit", String(limit));
   url.searchParams.set("page", String(page));
+  if (key) {
+    url.searchParams.set("api_key", key);
+  }
 
   const res = await fetch(url.toString(), {
     headers: key ? { "x-api-key": key } : {},

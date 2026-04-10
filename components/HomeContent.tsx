@@ -32,6 +32,11 @@ export function HomeContent() {
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const initialAllLoadStarted = useRef(false);
+  const nextPageRef = useRef(0);
+
+  useEffect(() => {
+    nextPageRef.current = nextPage;
+  }, [nextPage]);
 
   const favoriteIds = useMemo(
     () => new Set(favorites.map((f) => f.id)),
@@ -108,13 +113,13 @@ export function HomeContent() {
       (entries) => {
         const [entry] = entries;
         if (!entry?.isIntersecting) return;
-        void loadPage(nextPage, true);
+        void loadPage(nextPageRef.current, true);
       },
-      { root: null, rootMargin: "200px", threshold: 0 }
+      { root: null, rootMargin: "400px", threshold: 0 }
     );
     obs.observe(node);
     return () => obs.disconnect();
-  }, [tab, hasMore, loadingMore, loading, nextPage, loadPage]);
+  }, [tab, hasMore, loadingMore, loading, loadPage]);
 
   const handleToggleFavorite = useCallback((cat: FavoriteCat) => {
     persistToggleFavorite(cat);

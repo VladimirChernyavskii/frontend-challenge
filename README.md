@@ -54,3 +54,7 @@
 Локально для проверки с тем же префиксом откройте через `npm run dev` — Next подставит `basePath`.
 
 Загрузите содержимое `out/` в ветку `gh-pages` или подключите [GitHub Actions](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site) для деплоя из артефакта сборки.
+
+### GitHub Actions и ключ API
+
+Workflow [`.github/workflows/nextjs.yml`](.github/workflows/nextjs.yml) на шаге сборки передаёт `NEXT_PUBLIC_CATAPI_KEY` из **repository secret** `CATAPI_KEY` и выставляет `NEXT_PUBLIC_BASE_PATH` как `/имя-репозитория`. В [настройках репозитория](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions) создайте секрет **`CATAPI_KEY`** со значением вашего ключа с [The Cat API](https://thecatapi.com) (тот же ключ, что в `.env.local`). Без этого в собранном для Pages JS ключ не попадает в бандл, и API отдаёт лишь небольшое число картинок за запрос.

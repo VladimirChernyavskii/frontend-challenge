@@ -73,7 +73,11 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+      # NEXT_PUBLIC_* подставляются в клиентский бандл на этапе сборки — без ключа на Pages API отдаёт ~10 картинок.
       - name: Build with Next.js
+        env:
+          NEXT_PUBLIC_CATAPI_KEY: ${{ secrets.CATAPI_KEY }}
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
