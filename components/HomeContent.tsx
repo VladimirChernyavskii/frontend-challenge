@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import type { CatImage } from "@/lib/catapi";
-import { fetchCats } from "@/lib/catapi";
+import { CatApiError, fetchCats } from "@/lib/catapi";
 import {
   loadFavorites,
   toggleFavorite as persistToggleFavorite,
@@ -19,6 +19,18 @@ import { Header, type TabId } from "./Header";
 import styles from "./HomeContent.module.css";
 
 const PAGE_SIZE = 15;
+/** Минимальный интервал между завершением одного запроса и началом следующего */
+const MIN_GAP_MS = 800;
+/** Задержка перед подгрузкой по sentinel (меньше лишних запросов подряд) */
+const INTERSECTION_DEBOUNCE_MS = 400;
+/** Если нет Retry-After при 429 — ждём перед повтором */
+const RETRY_429_BASE_MS = 2500;
+/** Сколько раз пробовать при 429 подряд (первая попытка + повторы) */
+const MAX_FETCH_ATTEMPTS = 3;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export function HomeContent() {
   const [tab, setTab] = useState<TabId>("all");
@@ -33,6 +45,8 @@ export function HomeContent() {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const initialAllLoadStarted = useRef(false);
   const nextPageRef = useRef(0);
+  const fetchBusyRef = useRef(false);
+  const lastFetchFinishedRef = useRef(0);
 
   useEffect(() => {
     nextPageRef.current = nextPage;
@@ -51,51 +65,84 @@ export function HomeContent() {
     setFavorites(loadFavorites());
   }, []);
 
-  const loadPage = useCallback(
-    async (page: number, append: boolean) => {
-      if (append) {
-        setLoadingMore(true);
-      } else {
-        setLoading(true);
+  const loadPage = useCallback(async (page: number, append: boolean) => {
+    if (fetchBusyRef.current) return;
+    fetchBusyRef.current = true;
+
+    if (append) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+    }
+
+    const gap = Math.max(
+      0,
+      MIN_GAP_MS - (Date.now() - lastFetchFinishedRef.current)
+    );
+    if (gap > 0) {
+      await sleep(gap);
+    }
+
+    const fetchWith429Retries = async (): Promise<CatImage[]> => {
+      let lastError: unknown;
+      for (let attempt = 0; attempt < MAX_FETCH_ATTEMPTS; attempt++) {
+        try {
+          return await fetchCats(page, PAGE_SIZE);
+        } catch (e) {
+          lastError = e;
+          if (
+            e instanceof CatApiError &&
+            e.status === 429 &&
+            attempt < MAX_FETCH_ATTEMPTS - 1
+          ) {
+            const delay =
+              e.retryAfterMs ?? RETRY_429_BASE_MS * (attempt + 1);
+            await sleep(delay);
+            continue;
+          }
+          throw e;
+        }
       }
+      throw lastError;
+    };
+
+    try {
+      const batch = await fetchWith429Retries();
       setError(null);
-      try {
-        const batch = await fetchCats(page, PAGE_SIZE);
-        // API может вернуть меньше запрошенного лимита (например 10 вместо 15 на free tier).
-        // Считаем, что есть следующая страница, пока приходит непустой ответ; заканчиваем на пустом батче.
-        if (batch.length === 0) {
-          setHasMore(false);
-        } else {
-          setHasMore(true);
-          setNextPage(page + 1);
-        }
-        if (append) {
-          setCats((prev) => {
-            const seen = new Set(prev.map((c) => c.id));
-            const merged = [...prev];
-            for (const c of batch) {
-              if (!seen.has(c.id)) {
-                seen.add(c.id);
-                merged.push(c);
-              }
-            }
-            return merged;
-          });
-        } else {
-          setCats(batch);
-        }
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Ошибка загрузки");
-        if (!append) {
-          setCats([]);
-        }
-      } finally {
-        setLoading(false);
-        setLoadingMore(false);
+
+      if (batch.length === 0) {
+        setHasMore(false);
+      } else {
+        setHasMore(true);
+        setNextPage(page + 1);
       }
-    },
-    []
-  );
+      if (append) {
+        setCats((prev) => {
+          const seen = new Set(prev.map((c) => c.id));
+          const merged = [...prev];
+          for (const c of batch) {
+            if (!seen.has(c.id)) {
+              seen.add(c.id);
+              merged.push(c);
+            }
+          }
+          return merged;
+        });
+      } else {
+        setCats(batch);
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Ошибка загрузки");
+      if (!append) {
+        setCats([]);
+      }
+    } finally {
+      lastFetchFinishedRef.current = Date.now();
+      fetchBusyRef.current = false;
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (tab !== "all") return;
@@ -109,16 +156,24 @@ export function HomeContent() {
     if (!node || tab !== "all") return;
     if (!hasMore || loadingMore || loading) return;
 
+    let debounceId: ReturnType<typeof setTimeout> | undefined;
+
     const obs = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
         if (!entry?.isIntersecting) return;
-        void loadPage(nextPageRef.current, true);
+        clearTimeout(debounceId);
+        debounceId = setTimeout(() => {
+          void loadPage(nextPageRef.current, true);
+        }, INTERSECTION_DEBOUNCE_MS);
       },
-      { root: null, rootMargin: "400px", threshold: 0 }
+      { root: null, rootMargin: "200px", threshold: 0 }
     );
     obs.observe(node);
-    return () => obs.disconnect();
+    return () => {
+      clearTimeout(debounceId);
+      obs.disconnect();
+    };
   }, [tab, hasMore, loadingMore, loading, loadPage]);
 
   const handleToggleFavorite = useCallback((cat: FavoriteCat) => {

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FavoriteCat } from "@/lib/favorites";
 import { imageSrcForBrowser } from "@/lib/imageUrl";
-import styles from "./CatCard.module.css";
+import styles from "./Tile.module.css";
 
 type CatCardProps = {
   id: string;
@@ -42,7 +42,7 @@ export function CatCard({
   }, [displayBase]);
 
   return (
-    <article className={styles.card}>
+    <article className={styles.root}>
       <div className={styles.media}>
         {broken ? (
           <div className={styles.fallback} role="img" aria-label={alt}>

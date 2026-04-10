@@ -1,5 +1,18 @@
 import { ensureHttps } from "./imageUrl";
 
+export class CatApiError extends Error {
+  readonly status: number;
+  /** миллисекунды ожидания, если сервер прислал Retry-After */
+  readonly retryAfterMs?: number;
+
+  constructor(message: string, status: number, retryAfterMs?: number) {
+    super(message);
+    this.name = "CatApiError";
+    this.status = status;
+    this.retryAfterMs = retryAfterMs;
+  }
+}
+
 export type CatImage = {
   id: string;
   url: string;
@@ -26,7 +39,21 @@ export async function fetchCats(
   });
 
   if (!res.ok) {
-    throw new Error(`Не удалось загрузить котиков (${res.status})`);
+    let retryAfterMs: number | undefined;
+    if (res.status === 429) {
+      const ra = res.headers.get("Retry-After");
+      if (ra) {
+        const sec = parseInt(ra, 10);
+        if (!Number.isNaN(sec) && sec >= 0) {
+          retryAfterMs = sec * 1000;
+        }
+      }
+    }
+    throw new CatApiError(
+      `Не удалось загрузить котиков (${res.status})`,
+      res.status,
+      retryAfterMs
+    );
   }
 
   const data: unknown = await res.json();

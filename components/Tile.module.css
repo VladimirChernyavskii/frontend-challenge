@@ -1,4 +1,6 @@
-.card {
+/* Имя файла / классов без подстроки "card", чтобы не цеплялись сторонние правила [class*="card"] */
+
+.root {
   position: relative;
   aspect-ratio: 1 / 1;
   width: 100%;
@@ -6,13 +8,14 @@
   background: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: scale(1);
+  transform-origin: center center;
   transition:
-    width 0.2s ease,
-    margin 0.2s ease,
+    transform 0.2s ease,
     box-shadow 0.2s ease;
 }
 
-/* overflow только здесь — иначе box-shadow на .card обрезается */
+/* overflow только здесь — иначе box-shadow на корне обрезается */
 .media {
   position: absolute;
   inset: 0;
@@ -21,23 +24,22 @@
   border-radius: 2px;
 }
 
-.card:hover {
-  width: calc(100% + 30px);
-  margin: -15px;
+.root:hover {
+  z-index: 2;
+  transform: scale(1.08);
   box-shadow:
     0 12px 28px rgba(0, 0, 0, 0.22),
     0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card,
-  .card:hover {
+  .root,
+  .root:hover {
     transition: none;
   }
 
-  .card:hover {
-    width: 100%;
-    margin: 0;
+  .root:hover {
+    transform: none;
     box-shadow:
       0 12px 28px rgba(0, 0, 0, 0.22),
       0 4px 10px rgba(0, 0, 0, 0.12);
@@ -81,7 +83,7 @@
   transition: opacity 0.2s ease;
 }
 
-.card:hover .heartWrap,
+.root:hover .heartWrap,
 .heartWrapVisible {
   opacity: 1;
 }
@@ -101,18 +103,15 @@
     stroke 0.15s ease;
 }
 
-/* Контур без заливки: видна карточка, сердце не под курсором, не в избранном */
-.card:hover .heartWrap:not(:hover):not(.favoriteBtn) .path {
+.root:hover .heartWrap:not(:hover):not(.favoriteBtn) .path {
   fill: transparent;
 }
 
-/* Не в избранном + наведение на сердце — заливка как контур */
 .heartWrap:hover:not(.favoriteBtn) .path {
   fill: var(--heart);
   stroke: var(--heart);
 }
 
-/* В избранном — другой оттенок */
 .favoriteBtn .path {
   fill: var(--heart-favorite);
   stroke: var(--heart-favorite);
