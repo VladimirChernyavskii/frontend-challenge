@@ -30,3 +30,27 @@
 - реализация адаптивности будет плюсом, но не обязательна
 - бесконечная прокрутка будет плюсом, но не обязательна
 - можно использовать любой фреймворк включая vanilla.js
+
+## Реализация и запуск
+
+Стек: **Next.js 15** (App Router), статический экспорт (`output: 'export'`), данные избранного в `localStorage`, подгрузка котиков при прокрутке (IntersectionObserver).
+
+1. Установка зависимостей: `npm install`
+2. Скопируйте `.env.example` в `.env.local` и укажите `NEXT_PUBLIC_CATAPI_KEY` с [The Cat API](https://thecatapi.com) (без ключа запросы могут быть сильно ограничены).
+3. Разработка: `npm run dev`
+4. Сборка статики: `npm run build` — результат в папке `out/`
+
+### Если в консоли `net::ERR_CONNECTION_CLOSED` при загрузке jpg/gif
+
+- В **`npm run dev`** картинки с `cdn2.thecatapi.com` / `cdn.thecatapi.com` запрашиваются **через прокси Next** (`/thecat-cdn/...`), чтобы обойти нестабильное прямое соединение с CDN.
+- После **`npm run build`** (статический экспорт) прокси **нет** — браузер ходит на CDN напрямую. При повторных обрывах проверьте VPN, отключение антивирусного сканирования HTTPS, сеть; в Chrome можно временно отключить QUIC: `chrome://flags` → *Experimental QUIC protocol* → Disabled.
+
+## Публикация на GitHub Pages
+
+Сайт в репозитории вида `https://<user>.github.io/<repo>/` требует базового пути. Перед сборкой задайте в `.env.local` (или в секретах CI):
+
+- `NEXT_PUBLIC_BASE_PATH=/<имя-репозитория>` — например `/frontend-challenge`
+
+Локально для проверки с тем же префиксом откройте через `npm run dev` — Next подставит `basePath`.
+
+Загрузите содержимое `out/` в ветку `gh-pages` или подключите [GitHub Actions](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site) для деплоя из артефакта сборки.

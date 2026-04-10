@@ -1,0 +1,79 @@
+.card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 12px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #757575;
+  background: #f5f5f5;
+}
+
+.heartWrap {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.card:hover .heartWrap,
+.heartWrapVisible {
+  opacity: 1;
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  overflow: visible;
+}
+
+.path {
+  stroke: var(--heart);
+  stroke-width: 2;
+  fill: transparent;
+  transition: fill 0.15s ease;
+}
+
+/* Block hover: outline only (no fill) */
+.card:hover .heartWrap:not(:hover):not(.favoriteBtn) .path {
+  fill: transparent;
+}
+
+/* Heart hover or favorited: filled */
+.heartWrap:hover .path,
+.favoriteBtn .path {
+  fill: var(--heart);
+}

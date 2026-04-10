@@ -1,0 +1,62 @@
+.main {
+  min-height: calc(100vh - 64px);
+  padding: 24px 20px 48px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 16px 12px 40px;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+  }
+}
+
+.message {
+  text-align: center;
+  padding: 48px 16px;
+  color: #616161;
+  font-size: 1.05rem;
+}
+
+.error {
+  color: #c62828;
+  margin: 0 0 12px;
+}
+
+.retry {
+  padding: 8px 16px;
+  border: 1px solid #2196f3;
+  border-radius: 4px;
+  background: #fff;
+  color: #1976d2;
+}
+
+.retry:hover {
+  background: #e3f2fd;
+}
+
+.loadingFooter {
+  text-align: center;
+  padding: 24px 16px;
+  color: #757575;
+  font-size: 0.95rem;
+}
+
+.sentinel {
+  height: 1px;
+  width: 100%;
+}

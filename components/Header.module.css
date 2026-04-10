@@ -1,0 +1,32 @@
+.bar {
+  display: flex;
+  align-items: stretch;
+  min-height: 64px;
+  background: var(--header-blue);
+  color: var(--text-on-header);
+  padding: 0 8px;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 24px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1.25;
+  transition: background 0.15s ease;
+}
+
+.tab:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.tabActive {
+  background: var(--header-blue-active);
+}
+
+.tabActive:hover {
+  background: var(--header-blue-active);
+}
