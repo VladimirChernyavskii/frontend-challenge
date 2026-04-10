@@ -36,8 +36,6 @@ body {
   background: var(--page-bg);
   color: #212121;
   -webkit-font-smoothing: antialiased;
-  /* макет: leading-trim NONE — в CSS пока ограниченная поддержка */
-  leading-trim: none;
 }
 
 button {

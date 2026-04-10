@@ -22,7 +22,6 @@
   line-height: var(--text-line-height);
   letter-spacing: var(--text-tracking);
   text-align: center;
-  leading-trim: none;
   transition: background 0.15s ease;
 }
 
