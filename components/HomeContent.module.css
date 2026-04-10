@@ -3,6 +3,7 @@
   margin: 0 var(--page-gutter);
   padding: 24px 0 48px;
   max-width: none;
+  overflow: visible;
 }
 
 @media (max-width: 600px) {
