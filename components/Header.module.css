@@ -4,7 +4,7 @@
   min-height: 64px;
   background: var(--header-blue);
   color: var(--text-on-header);
-  padding: 0 8px;
+  padding: 0;
 }
 
 .tab {
