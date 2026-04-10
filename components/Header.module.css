@@ -6,17 +6,23 @@
   padding: 0 var(--page-gutter);
   background: var(--header-blue);
   color: var(--text-on-header);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.24);
 }
 
 .tab {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 0 24px;
   border: none;
   background: transparent;
   color: inherit;
-  font-size: 1rem;
-  line-height: 1.25;
+  font-size: var(--text-size);
+  font-weight: 400;
+  line-height: var(--text-line-height);
+  letter-spacing: var(--text-tracking);
+  text-align: center;
+  leading-trim: none;
   transition: background 0.15s ease;
 }
 

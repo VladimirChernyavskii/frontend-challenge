@@ -5,12 +5,21 @@
   --page-bg: #ffffff;
   --text-on-header: #ffffff;
   --page-gutter: 62px;
+
+  /* Типографика (макет): Roboto 14 / 21, 0.25 tracking — задаётся на body, семейство через next/font */
+  --text-size: 14px;
+  --text-line-height: 21px;
+  --text-tracking: 0.25px;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+html {
+  font-size: var(--text-size);
 }
 
 html,
@@ -21,9 +30,14 @@ body {
 }
 
 body {
+  font-weight: 400;
+  line-height: var(--text-line-height);
+  letter-spacing: var(--text-tracking);
   background: var(--page-bg);
   color: #212121;
   -webkit-font-smoothing: antialiased;
+  /* макет: leading-trim NONE — в CSS пока ограниченная поддержка */
+  leading-trim: none;
 }
 
 button {

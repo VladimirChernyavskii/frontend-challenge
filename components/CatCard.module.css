@@ -2,15 +2,38 @@
   position: relative;
   aspect-ratio: 1 / 1;
   width: 100%;
+  margin: 0;
   background: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  transition: box-shadow 0.2s ease;
+  transition:
+    width 0.2s ease,
+    margin 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .card:hover {
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+  width: calc(100% + 30px);
+  margin: -15px;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.22),
+    0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card:hover {
+    transition: none;
+  }
+
+  .card:hover {
+    width: 100%;
+    margin: 0;
+    box-shadow:
+      0 12px 28px rgba(0, 0, 0, 0.22),
+      0 4px 10px rgba(0, 0, 0, 0.12);
+  }
 }
 
 .image {

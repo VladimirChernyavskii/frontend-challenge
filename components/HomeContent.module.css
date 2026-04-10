@@ -16,6 +16,7 @@
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 24px;
   align-items: start;
+  overflow: visible;
 }
 
 @media (max-width: 480px) {
