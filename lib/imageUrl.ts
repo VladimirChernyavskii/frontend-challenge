@@ -1,3 +1,5 @@
+import { normalizeBasePath } from "./basePath";
+
 /** Нормализует URL картинки с CDN (избегаем mixed content и protocol-relative URL). */
 export function ensureHttps(imageUrl: string): string {
   const t = imageUrl.trim();
@@ -18,7 +20,7 @@ export function imageSrcForBrowser(imageUrl: string): string {
   }
   try {
     const parsed = new URL(u);
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+    const basePath = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH);
     if (parsed.hostname === "cdn2.thecatapi.com") {
       return `${basePath}/thecat-cdn${parsed.pathname}${parsed.search}`;
     }

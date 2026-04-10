@@ -56,8 +56,14 @@ export function HomeContent() {
       setError(null);
       try {
         const batch = await fetchCats(page, PAGE_SIZE);
-        setHasMore(batch.length >= PAGE_SIZE);
-        setNextPage(page + 1);
+        // API может вернуть меньше запрошенного лимита (например 10 вместо 15 на free tier).
+        // Считаем, что есть следующая страница, пока приходит непустой ответ; заканчиваем на пустом батче.
+        if (batch.length === 0) {
+          setHasMore(false);
+        } else {
+          setHasMore(true);
+          setNextPage(page + 1);
+        }
         if (append) {
           setCats((prev) => {
             const seen = new Set(prev.map((c) => c.id));

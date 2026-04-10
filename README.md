@@ -49,7 +49,7 @@
 
 Сайт в репозитории вида `https://<user>.github.io/<repo>/` требует базового пути. Перед сборкой задайте в `.env.local` (или в секретах CI):
 
-- `NEXT_PUBLIC_BASE_PATH=/<имя-репозитория>` — например `/frontend-challenge`
+- `NEXT_PUBLIC_BASE_PATH=/<имя-репозитория>` — например `/frontend-challenge` (**не** полный URL вида `https://....github.io/...`; если в Actions указали URL целиком, в `next.config.ts` путь всё равно нормализуется)
 
 Локально для проверки с тем же префиксом откройте через `npm run dev` — Next подставит `basePath`.
 
