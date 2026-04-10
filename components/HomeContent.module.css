@@ -25,6 +25,16 @@
   }
 }
 
+@media (min-width: 1440px) {
+  .main {
+    padding: 52px 0 48px;
+  }
+
+  .grid {
+    gap: 48px;
+  }
+}
+
 .message {
   text-align: center;
   padding: 48px 16px;
