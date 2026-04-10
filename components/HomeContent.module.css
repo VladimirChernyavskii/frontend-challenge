@@ -1,13 +1,13 @@
 .main {
   min-height: calc(100vh - 64px);
-  padding: 24px 20px 48px;
-  max-width: 1600px;
-  margin: 0 auto;
+  margin: 0 var(--page-gutter);
+  padding: 24px 0 48px;
+  max-width: none;
 }
 
 @media (max-width: 600px) {
   .main {
-    padding: 16px 12px 40px;
+    padding: 16px 0 40px;
   }
 }
 
