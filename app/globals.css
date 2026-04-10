@@ -1,7 +1,8 @@
 :root {
   --header-blue: #2196f3;
   --header-blue-active: #1e88e5;
-  --heart: #ff5233;
+  --heart: #f24e1e;
+  --heart-favorite: #ff3a00;
   --page-bg: #ffffff;
   --text-on-header: #ffffff;
   --page-gutter: 62px;

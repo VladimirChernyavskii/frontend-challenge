@@ -6,11 +6,19 @@
   background: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
   transition:
     width 0.2s ease,
     margin 0.2s ease,
     box-shadow 0.2s ease;
+}
+
+/* overflow только здесь — иначе box-shadow на .card обрезается */
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 2px;
 }
 
 .card:hover {
@@ -58,6 +66,7 @@
 
 .heartWrap {
   position: absolute;
+  z-index: 1;
   bottom: 10px;
   right: 10px;
   width: 40px;
@@ -87,16 +96,24 @@
   stroke: var(--heart);
   stroke-width: 2;
   fill: transparent;
-  transition: fill 0.15s ease;
+  transition:
+    fill 0.15s ease,
+    stroke 0.15s ease;
 }
 
-/* Block hover: outline only (no fill) */
+/* Контур без заливки: видна карточка, сердце не под курсором, не в избранном */
 .card:hover .heartWrap:not(:hover):not(.favoriteBtn) .path {
   fill: transparent;
 }
 
-/* Heart hover or favorited: filled */
-.heartWrap:hover .path,
-.favoriteBtn .path {
+/* Не в избранном + наведение на сердце — заливка как контур */
+.heartWrap:hover:not(.favoriteBtn) .path {
   fill: var(--heart);
+  stroke: var(--heart);
+}
+
+/* В избранном — другой оттенок */
+.favoriteBtn .path {
+  fill: var(--heart-favorite);
+  stroke: var(--heart-favorite);
 }

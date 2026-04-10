@@ -43,23 +43,25 @@ export function CatCard({
 
   return (
     <article className={styles.card}>
-      {broken ? (
-        <div className={styles.fallback} role="img" aria-label={alt}>
-          Не удалось загрузить
-        </div>
-      ) : (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element -- внешние URL The Cat API */}
-          <img
-            className={styles.image}
-            src={src}
-            alt={alt}
-            loading="lazy"
-            referrerPolicy="no-referrer"
-            onError={handleImgError}
-          />
-        </>
-      )}
+      <div className={styles.media}>
+        {broken ? (
+          <div className={styles.fallback} role="img" aria-label={alt}>
+            Не удалось загрузить
+          </div>
+        ) : (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element -- внешние URL The Cat API */}
+            <img
+              className={styles.image}
+              src={src}
+              alt={alt}
+              loading="lazy"
+              referrerPolicy="no-referrer"
+              onError={handleImgError}
+            />
+          </>
+        )}
+      </div>
       <button
         type="button"
         className={`${styles.heartWrap} ${isFavorite ? styles.favoriteBtn : ""} ${isFavorite ? styles.heartWrapVisible : ""}`}
